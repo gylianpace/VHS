@@ -1,1 +1,16 @@
-code here
+function _init()
+ x = 64
+ y = 64
+end 
+ 
+ 
+function _update()
+	if (btn(➡️)) x = x+1
+	if (btn(⬅️)) x = x-1
+	if (btn(⬆️)) y = y-1
+	if (btn(⬇️)) y = y+1
+end 
+
+function _draw() 
+ pset(x,y,10)  
+end
