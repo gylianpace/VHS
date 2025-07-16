@@ -1,3 +1,4 @@
+
 function _init()
 --player 
  p_x = 64
@@ -5,8 +6,8 @@ function _init()
  p_spd = 2
  p_spr = 1
 --item
- i.x = nil
- i.y = nil 
+ i_x = nil
+ i_y = nil 
  
  a = 0
  
@@ -16,17 +17,7 @@ function _init()
 end
 
 
--->8
-function _draw()
- --pset(x,y)
- --print("☉",x,y,x)
- --cls()
- --circ(x,y,a,rnd(16))
- spr(p_spr,p_x,p_x)
- spr(i_spr,rnd(100),rnd(100))
- 
 
-end
 
 
 
@@ -34,14 +25,27 @@ end
 function _update()
 
 --move player
- if (btn(➡️)) p_x += x +1
- if (btn(⬇️)) p_y += y +1
- if (btn(⬅️)) p_x -= x -1
- if (btn(⬇️)) p_y -= y -1
+ if (btn(➡️)) p_x += p_spd
+ if (btn(⬇️)) p_y += p_spd
+ if (btn(⬅️)) p_x -= p_spd
+ if (btn(⬆️)) p_y -= p_spd
  
  if (btn(4)) a = a-1
  if (btn(5)) a = a+1
  
  
  
+end
+
+
+-->8
+function _draw()
+ --pset(x,y)
+ --print("☉",x,y,x)
+ --cls()
+ --circ(x,y,a,rnd(16))
+ spr(p_spr,p_x,p_y)
+ spr(i_spr,rnd(100),rnd(100))
+ 
+
 end
