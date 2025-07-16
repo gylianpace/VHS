@@ -1,16 +1,715 @@
+pico-8 cartridge // http://www.pico-8.com
+version 42
+__lua__
+--init
 function _init()
- x = 64
- y = 64
-end 
+ music(0)	
+ ---- game
+ state = "title"
+ inverscore = 64
+ timer = 24	
+ timercycle = 30
+  
+ -- time to flip the player on lose
+ timerlose = 0
  
+ -- how long to flip robot
+ secondstoflip = 90
+ storageransec = 0
  
-function _update()
-	if (btn(➡️)) x = x+1
-	if (btn(⬅️)) x = x-1
-	if (btn(⬆️)) y = y-1
-	if (btn(⬇️)) y = y+1
-end 
+ random=true
+ triggeraudio=true
+ stopsfx=false
+ 	
+ ---- player
+ pl={
+  x=22,
+  y=78,
+  current=1,
+  -- x coordinate at spritesheet
+  sprx={16,0,16},
+  -- y coordinate at spritesheet
+  spry={0,16,16},
+  timer=0,
+  runtimer=false,
+  loseflip=false,	
+  xadjust=16
+ }
+ 
+ ---- robot
+ rob={
+  x=82,
+		y=51,
+		origy=51,
+		radius=8,
+		cycle=15,
+		current=1,
+		sprx={64,96},
+		spry={0,0},
+		flipx=false,
+		flipxadjust=0,
+		timer=0
+	}
+	
+	-- store ypos of rob for fluid animation
+	storecycle=0  
+	
+	-- how many frames to full cos animation
+ maxcycle=59
 
-function _draw() 
- pset(x,y,10)  
+ -- lose state laser stuff
+ lasercolor={1,2,6}
+ colorcount=1
+ 
+ storeadjust=0
+ 
+ 
+ --explosion
+ e1={70,71,72,73,74}
+ e1cur1=1
+ e1cur2=1
+ e1cur3=1
+ 
+ e2={86,87,88,89,90,91,92,93}
+ e2cur1=1
+ e2cur2=1
+ e2cur3=1
+ 
+ e3={102,013,104,105,106,107}
+ e3cur1=1
+ e3cur2=1
+ e3cur3=1
+ 
+ flips1=true
+ flips2=true
+ flips3=true
+ 
+ 
+end
+
+ 
+-->8
+--update
+function _update()
+--	state()
+		
+	if state=="title" then
+	 if btnp(5) then
+	  state="game"
+	 end
+	end
+
+ updategame()
+ 
+ 
+ --win state
+ if inverscore<=0 then
+  state="win"
+  storecycle=rob.y
+	 if rob.flipx==true then 	
+	  rob.flipxadjust=-46
+	 end 	
+  if btnp(5) then
+   resetgame()	
+  end
+ end
+ 
+ if state=="win" then
+  if btnp(5) then
+   resetgame()
+  end
+ end	
+ 
+ --lose
+ if wascought==true then
+  state="lose"
+  storecycle=rob.cycle
+  storeadjust=rob.flipxadjust
+
+  if btnp(5) then
+   resetgame()	
+  end
+  	
+ end	
+ 
+end
+
+
+
+-->8
+-- draw
+function _draw()
+ cls()
+ map(0,0,0,0)
+ 
+ drawtitle()
+ drawgame()	
+ drawwin()
+ drawlose()
+ 
+
+end
+-->8
+-- draw title
+function drawtitle()
+
+ if state=="title" then
+
+  --hud
+  sspr(1,32,1,1,0,2,128,44)
+  sspr(0,32,1,1,0,4,128,40)	
+	 print("tactical",7,17,1)
+	 print("amish",9,21,2)
+	 print("64",7,25,1)
+	 print("press   to butter",
+	  52,10,1)
+		 print("⬇️",74,10,2)	
+	 print("avoid detection",
+	  52,18,1)
+	 print("save the day!",
+		  52,28,1)
+	 print("press  to begin",
+	  52,34 ,1)
+	 print("x",74,34,2)
+	
+  --player sprite
+  sspr(0,0,16,16,pl.x,pl.y,32,32)
+  
+  --robot sprite
+  	sspr(rob.sprx[rob.current],
+   rob.spry[rob.current],
+   32,32,rob.x,rob.y,64,64)
+  
+  
+  if rob.timer<=10 then
+   rob.current=1
+   else
+   rob.current=2
+  end
+				 
+  rob.timer+=1
+  if rob.timer>=20 then
+   rob.timer=0	
+  end
+  
+ end
+  
+end	
+-->8
+-- draw game
+function drawgame()
+ 
+ if state=="game" then
+	 
+  ---------------------------
+  --hud
+  print(inverscore,pl.x+20, 
+   pl.y-8, 6)
+  sspr(1,32,1,1,55,8,18,9)
+  if timer>=10 then
+   print(timer,61,10,6)
+  else
+   print(timer,63,10,6)
+  end
+  
+  
+  ---------------------------
+  --player
+  -- start butter up with sweat 
+  sspr(pl.sprx[pl.current],
+   pl.spry[pl.current],
+   16,16,pl.x,pl.y,32,32)
+  
+  	
+  -- animation/state machine
+  -- butter down if not buttering
+  if pl.current==1 and btn(⬇️) then
+   pl.current+=1 
+  end 
+  
+  --butter down when not buttering
+  if pl.current!=2 and btn(⬇️) then
+   pl.current=1
+  end 
+  
+  --relase butter with sweat
+  if pl.	current==2 and btn(⬇️)==false then
+   pl.current+=1
+   pl.runtimer=true   
+  end
+  
+  if pl.runtimer then
+   pl.timer+=1
+  end
+  
+  if pl.timer>5 then
+   pl.current=1
+   pl.timer=0
+   pl.runtimer=false
+  end 		
+  
+  
+  ----------------------------
+  --robot
+ 	sspr(rob.sprx[rob.current],
+   rob.spry[rob.current],
+   32,32,rob.x+rob.flipxadjust,
+   rob.y,64,64,rob.flipx)
+  
+  
+  -- radial y movement
+  rob.y = rob.radius	*
+   cos(rob.cycle/maxcycle)+rob.origy
+  rob.cycle+=1
+  
+  if rob.cycle==maxcycle then
+   rob.cycle=0	
+  end 	
+   
+   
+  -- animation state machine
+  if rob.timer<=10 then
+   rob.current=1
+   else
+   rob.current=2
+  end
+  
+  rob.timer+=1
+  if rob.timer>=20 then
+   rob.timer=0
+  end	 
+ 
+ end
+
+end
+
+
+  --[[
+  -- player
+  if pl.idlst then
+   sspr(16,0,16,16,22,78,32,32)  
+	 end	
+	  
+  if btn(⬇️) then
+   pl.idlst=false
+   sspr(0,16,16,16,22,78,32,32)
+  end
+  
+  if pl.animst then
+	  print("animst",0,0,1)
+	 -- pl.idlstcnt+=1
+	 -- sspr(32,0,16,16,22,78,32,32)
+	 end
+  --]]					
+-->8
+-- draw lose
+function drawlose()
+ if state=="lose" then
+  
+  
+  --hud
+	 sspr(1,32,1,1,0,6,128,22)
+  sspr(0,32,1,1,0,8,128,18)
+  print("you lose :(",20,11,1)
+  print("press  to restart",
+	  20,18,1)
+	 print("x",42,18,2)
+  
+  
+  ----------------------------
+  -- player
+ 
+  -- pl.loseflip starts as false
+  -- pl.xadjust starts as 16
+	  sspr(32,0,32,32,
+	    pl.x+pl.xadjust,pl.y-20,
+	    64,64,pl.loseflip)
+	  
+  timerlose+=1
+
+  if timerlose<=10 then 
+   pl.loseflip=false
+   pl.xadjust=-40
+   else
+   pl.loseflip=true
+   pl.xadjust=-8
+  end
+ 
+  if timerlose>=20 then
+   timerlose=0
+  end  
+  
+  -- butter cup
+  sspr(8,32,8,8,32,94,16,16)
+   
+  ----------------------------
+  -- robot
+  rob.flipx=true
+  -- print(colorcount,10,42,7)  
+  
+  -- sprites
+  rob.cycle=storecycle
+  rob.flipxadjust=storeadjust
+   rob.flipxadjust=-46
+ 	sspr(rob.sprx[rob.current],
+   rob.spry[rob.current],
+   32,32,rob.x+rob.flipxadjust,
+   rob.y,64,64,rob.flipx)
+    
+  -- radial y movement
+  rob.y = rob.radius	*
+   cos(rob.cycle/maxcycle)+rob.origy
+  rob.cycle+=1
+  
+  if rob.cycle==maxcycle then
+   rob.cycle=0	
+  end 	
+       
+  -- animation state machine
+  if rob.timer<=10 then
+   rob.current=1
+   else
+   rob.current=2
+  end
+  
+  rob.timer+=1
+  if rob.timer>=20 then
+   rob.timer=0
+  end	 
+  
+  -- laserbeam
+  
+  sfx(0,0,0,8)	
+  
+  line(rob.x,rob.y+22,
+  pl.x+10,pl.y+14,
+  lasercolor[colorcount])
+  	
+  colorcount+=1
+  if colorcount>=4 then
+    colorcount=1
+  end
+  
+  line(rob.x+6,rob.y+22,
+  pl.x+10,pl.y+14,
+  lasercolor[colorcount])
+  	
+  colorcount+=1
+  if colorcount>=4 then
+    colorcount=1
+  end
+  
+  line(rob.x+8,rob.y+22,
+  pl.x+10,pl.y+14,
+  lasercolor[colorcount])
+  	
+  colorcount+=1
+  if colorcount>=4 then
+    colorcount=1
+  end
+  
+  line(rob.x,rob.y+22,
+  pl.x+10,pl.y+14,
+  lasercolor[colorcount])
+  	
+  colorcount+=1
+  if colorcount>=4 then
+    colorcount=1
+  end
+  
+ end 
+end
+-->8
+-- resetgame
+function resetgame()
+ 
+ state="title"
+ timer=24
+ wascought=false
+ inverscore=64
+	
+ rob.x=82
+	rob.y=51
+	rob.flipx=false
+	rob.flipxadjust=0
+	secondstoflip=90
+	storeadjust=0
+
+	
+	triggeraudio=true
+	stopsfx=false
+end
+-->8
+-- draw win 	
+function drawwin()
+ 
+ if state=="win" then
+  ----------------------------
+  --hud
+	 sspr(1,32,1,1,0,6,128,22)
+  sspr(0,32,1,1,0,8,128,18)
+  print("  you  win  ",19,11,1)
+   print("♥   ♥   ♥",19,
+   11,2)	
+  print("press  to restart",
+	  20,18,1)
+	  print("x",42,18,2)
+  
+  --player
+  sspr(16,32,32,32,
+   -8,55,64,64)
+  
+  -- butter cup
+  sspr(8,32,8,8,32,94,16,16)
+  
+ 
+	 ---------------------------
+	 -- rob
+	 --if rob.flipx==true then
+	 -- 	rob.flipxadjust=-46
+	 --end 	
+
+	 rob.cycle=storecycle
+	 rob.flipxadjust=storeadjust
+	 
+	 if rob.flipx==true then
+	  	rob.flipxadjust=-46
+	 end
+		sspr(rob.sprx[rob.current],
+	  rob.spry[rob.current],
+	  32,32,rob.x+rob.flipxadjust,
+	  rob.y,64,64,rob.flipx)	
+
+	 rob.y+=1
+	 if rob.y>120 then
+	  stopsfx=true
+	 end
+	
+	 -- animation state machine
+	 if rob.timer<=10 then
+	  rob.current=1
+	  else
+	  rob.current=2
+	 end
+	 
+	 rob.timer+=1
+	 if rob.timer>=20 then
+	  rob.timer=0
+	 end	 
+
+
+
+
+  ------------------------
+  -- explosions  
+  if flips1==true then
+   exx1=rnd(8*2)-2
+   exy1=rnd(16*2)+10
+   choose1=rnd(2)
+   if stopsfx==false then
+    sfx(3)
+   end	
+  end
+  
+  flips1=false
+   
+  if choose1>=0 and choose1<1 then
+   spr(e1[e1cur1],
+	   rob.x+exx1,
+	   rob.y+exy1)
+	   
+	  e1cur1+=1
+		 if e1cur1>=6 then
+		  e1cur1=1
+		  flips1=true
+		 end
+   
+	 elseif choose1>=1 and choose1<2 then
+   spr(e2[e2cur1],
+		  rob.x+exx1,
+	   rob.y+exy1)
+	   
+	  e2cur1+=1
+		 if e2cur1>=9 then
+		  e2cur1=1
+		  flips1=true
+		 end
+	  
+  elseif choose1>=2 then
+   spr(e3[e3cur1],
+	   rob.x+exx1,
+	   rob.y+exy1)
+	   
+	  e3cur1+=1
+	  if e3cur1>=7 then
+	   e3cur1=1
+	   flips1=true
+	  end
+	 end
+	 
+	 -----------------------------
+	 -- second set
+	  if flips2==true then
+   exx2=rnd(8*2)-2
+   exy2=rnd(16*2)+10
+   choose2=rnd(2)
+   if stopsfx==false then 
+    sfx(4)
+   end 
+  end
+  
+  flips2=false
+   
+  if choose2>=0 and choose2<1 then
+	  spr(e1[e1cur2],
+	   rob.x+exx2,
+	   rob.y+exy2)
+	   
+	  e1cur2+=1
+		 if e1cur2>=6 then
+		  e1cur2=1
+		  flips2=true
+		 end
+   
+	 elseif choose2>=1 and choose2<2 then
+	  spr(e2[e2cur2],
+		  rob.x+exx2,
+	   rob.y+exy2)
+	   
+	  e2cur2+=1
+		 if e2cur2>=9 then
+		  e2cur2=1
+		  flips2=true
+		 end
+	  
+  elseif choose2>=2 then
+   spr(e3[e3cur2],
+	   rob.x+exx2,
+	   rob.y+exy2)
+	   
+	  e3cur2+=1
+	  if e3cur2>=7 then
+	   e3cur2=1
+	   flips2=true
+	  end
+	 end
+   
+  --------------------------
+  -- third set
+  if flips3==true then
+   exx3=rnd(8*2)-2
+   exy3=rnd(16*2)+10
+   choose3=rnd(2)
+   if stopsfx==false then
+    sfx(5)
+   end
+  end
+  
+  flips3=false
+   
+  if choose3>=0 and choose3<1 then
+   spr(e1[e1cur3],
+	   rob.x+exx3,
+	   rob.y+exy3)
+	   
+	  e1cur3+=1
+		 if e1cur3>=6 then
+		  e1cur3=1
+		  flips3=true
+		 end
+   
+	 elseif choose3>=1 and choose3<2 then
+	  spr(e2[e2cur3],
+		  rob.x+exx3,
+	   rob.y+exy3)
+	   
+	  e2cur3+=1
+		 if e2cur3>=9 then
+		  e2cur3=1
+		  flips3=true
+		 end
+	  
+  elseif choose3>=2 then
+   spr(e3[e3cur3],
+	   rob.x+exx3,
+	   rob.y+exy3)
+	   
+	  e3cur3+=1
+	  if e3cur3>=7 then
+	   e3cur3=1
+	   flips3=true
+	  end
+	 end
+  
+ end
+end
+
+-->8
+--- update game
+function updategame()
+
+	if state=="game" then
+	 if btnp(⬇️) then
+   inverscore-=1
+   sfx(1,0,0,2)			
+  end
+  	
+  	
+  -------------- lose
+  -- timer
+  timercycle-=1
+  if timercycle<=0 then
+   timer-=1
+   timercycle=30
+  end
+  
+  if timer<=0 then
+   state="lose"
+   wascought=true	
+
+  end 
+ 
+  -- timer to flip robot
+  timerlose+=1
+  
+  if random==true then
+   storagerndsec=rnd(40)
+  end
+  
+  random=false
+   
+  -- secondstoflip ini at 60
+  
+  if timerlose>=secondstoflip-20
+   and triggeraudio==true then
+   sfx(2,3)
+   triggeraudio=false
+  end 
+  
+  	
+  if timerlose>=secondstoflip 
+   and rob.flipx==false then
+   rob.flipx=true
+   rob.flipxadjust=-46
+   timerlose=0
+   secondstoflip=30+storagerndsec
+   random=true
+   triggeraudio=false
+  end
+  
+  if timerlose>=secondstoflip 
+   and rob.flipx==true then
+   rob.flipx=false 
+   rob.flipxadjust=0
+   timerlose=0
+	  secondstoflip=30+storagerndsec
+   random=true
+   triggeraudio=true					
+  end
+  
+  if btnp(⬇️) and rob.flipx then
+   wascought=true
+   state="lose"
+  end 
+ end 
 end
