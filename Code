@@ -1,18 +1,22 @@
-function _init()
---player
- p_x = 64
- p_y = 64
- p_spd = 2
- p_spr = 1
+function _update()
+ if (btn(➡️)) x = x +1
+ if (btn(⬇️)) y = y +1
+ if (btn(⬅️)) x = x -1
+ if (btn(⬆️)) y = y -1
  
---item 
- i_x = 10
- i_y = 10
- i_spr = 2
- i_draw = false
+ if (btn(4)) a = a-1
+ if (btn(5)) a = a+1
+ 
+ 
+--collision
+	if (abs(p_x - i_x) < 8 and
+	 abs(p_y - i_y) < 8) then
+	  cls()
+	  i_x = rnd(128 - board)
+	  i_y = rnd(128 - board)
+	  i_draw = true
 
---???  
- a = 0
+
+
  
- map(0,0,0,0,128,128)
 end
