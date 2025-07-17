@@ -1,29 +1,18 @@
 function _init()
- x = 10
- y = 10
+--player
+ p_x = 64
+ p_y = 64
+ p_spd = 2
+ p_spr = 1
  
+--item 
+ i_x = 10
+ i_y = 10
+ i_spr = 2
+ i_draw = false
+
+--???  
  a = 0
-end
-
-function _update()
- if (btn(➡️)) x = x +1
- if (btn(⬇️)) y = y +1
- if (btn(⬅️)) x = x -1
- if (btn(⬆️)) y = y -1
  
- if (btn(4)) a = a-1
- if (btn(5)) a = a+1
- 
-end
-
-
-function _draw()
- --pset(x,y)
- --print("☉",x,y,x)
- --cls()
- --circ(x,y,a,rnd(16))
- 
- spr(1,x,y    )
- 
- 
+ map(0,0,0,0,128,128)
 end
