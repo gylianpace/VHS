@@ -9,12 +9,12 @@ function _update()
  
  
 --collision
-	if (abs(p_x - i_x) < 8 and
-	 abs(p_y - i_y) < 8) then
-	  cls()
-	  i_x = rnd(128 - board)
-	  i_y = rnd(128 - board)
-	  i_draw = true
+ if (abs(p_x - i_x) < 8 and
+  abs(p_y - i_y) < 8) then
+   cls()
+   i_x = rnd(128 - board)
+   i_y = rnd(128 - board)
+   i_draw = true
 
 
 
