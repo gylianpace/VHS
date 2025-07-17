@@ -1,20 +1,21 @@
-function _draw()
- --pset(x,y)
- --print("☉",x,y,x)
- --cls(
+function _update()
+ if (btn(➡️)) p_x+= p_spd
+ if (btn(⬇️)) p_y+= p_spd
+ if (btn(⬅️)) p_x-= p_spd
+ if (btn(⬆️)) p_y-= p_spd
  
-circfill(p_x+4,p_y+4,rnd(8)
- ,rnd(16))
+ if (btn(4)) a = a-1
+ if (btn(5)) a = a+1
  
  
- if (i_draw) then
-  map(0,0,0,0,128,128)
-  i_draw = false
-  end
- 
+--collision
+	if (abs(p_x - i_x) < 8 and
+	 abs(p_y - i_y) < 8) then
+	  cls()
+	  i_x = rnd(128 - board)
+	  i_y = rnd(128 - board)
+	  i_draw = true
+	  board -= 10
 
- spr(i_spr,i_x,i_y)
- spr(p_spr,p_x,p_y)
- 
- 
+ end
 end
