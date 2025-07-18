@@ -12,9 +12,13 @@ function _init()
  
  board = 110
  
- a = 0
+ a = 5
+ speed = 0
+
  
- score = 0
+ ----- game difficulty
+ score = 35
+ timer = 1000
  
  map(0,0,0,0,128,128)
  music(0)
