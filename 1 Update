@@ -1,4 +1,10 @@
 function _update()
+
+if (timer > 0)then
+ if ( score > 0) then
+
+
+ if (timer >= 0) timer -= 1
 --move player
  if (btn(➡️)) p_x += p_spd
  if (btn(⬇️)) p_y += p_spd
@@ -17,8 +23,29 @@ function _update()
 	  i_y = rnd(120 - board)
 	  i_draw = true
 	  sfx(1)
-	  board -= 7
-	  score += 1
-	   
+	  if (board > 1 ) board -= 5
+	  score -= 1
+	  speed += 1
+	  
+	  if (speed == 10) then
+	   p_spd +=1
+	   speed = 0
+	  end
+	 end 
+	 
+	 if (score <=0  ) then
+	  sfx(2)
+	  music(-1)
+	  score = 0
+	  end
+	 if (timer <=0) then
+	  sfx(3)
+	  music (-1)
+	  timer = 0
+	 end 
+	 
+	  
+	  
+	end  
  end
 end
