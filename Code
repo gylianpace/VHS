@@ -3,7 +3,11 @@ function _init()
  y = 10
  a = 0
 
-value = 1
+value = 3
+
+sprites = {10,11,12,13,14,15}
+
+v = 1
 end
 
 function _update()
@@ -14,13 +18,18 @@ function _update()
  
  if (btn(4)) a-= value
  if (btn(5)) a+= value
+ 
+ v += 1
+ 
+ if (v > 6) v = 1
+ 
 end
 
 function _draw()
  --pset(x,y)
  --print("☉",x,y,x)
  --cls()
- circfill(x,y,a,rnd(16))
- circ(x,y,x,y)
- spr(1,x,y)
+ circfill(x+3,y+3,7,rnd(2))
+ --circ(x,y,x,y)
+ spr(sprites[v],x,y)
 end
