@@ -1,50 +1,25 @@
-function _update()
- if (btn(➡️)) p_x+= p_spd
- if (btn(⬇️)) p_y+= p_spd
- if (btn(⬅️)) p_x-= p_spd
- if (btn(⬆️)) p_y-= p_spd
- 
- if (btn(4)) a = a-1
- if (btn(5)) a = a+1
- 
- 
---collision
-	if (abs(p_x - i_x) < 8 and
-	 abs(p_y - i_y) < 8) then
-	  cls()
-	  i_x = rnd(128 - board)
-	  i_y = rnd(128 - board)
-	  i_draw = true
-	  board -= 10
+function _init()
+ x = 10
+ y = 10
+ a = 0
 
- end
+value = 1
 end
 
-
-
-
-
-
-
-
+function _update()
+ if (btn(➡️)) x+= value
+ if (btn(⬇️)) y+= value
+ if (btn(⬅️)) x-= value
+ if (btn(⬆️)) y-= value
+ 
+ if (btn(4)) a-= value
+ if (btn(5)) a+= value
+end
 
 function _draw()
  --pset(x,y)
  --print("☉",x,y,x)
- --cls(
- 
-circfill(p_x+4,p_y+4,rnd(8)
- ,rnd(16))
- 
- 
- if (i_draw) then
-  map(0,0,0,0,128,128)
-  i_draw = false
-  end
- 
-
- spr(i_spr,i_x,i_y)
- spr(p_spr,p_x,p_y)
- 
- 
+ --cls()
+ circfill(x,y,a,rnd(16))
+ circ(x,y,x,y)
 end
