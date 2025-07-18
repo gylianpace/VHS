@@ -2,16 +2,21 @@ function _draw()
  --pset(x,y)
  --print("☉",x,y,x)
  --cls()
- circfill(p_x+4,p_y+4,rnd(6),rnd(16))
+ circfill(p_x+4,p_y+4,5,rnd(5))
+ 
  --spr(i_spr,rnd(100),rnd(100))
+ 
  if (i_draw) then
   map(0,0,0,0,128,128)
   i_draw = false
  end
+ 
  spr(i_spr, i_x, i_y)
  
  spr(p_spr,p_x,p_y)
 
 
+ print(score, 50, 2, 10)
+  -- if (cls())  map(0,0,0,0,128,128)
 
 end
