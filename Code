@@ -22,4 +22,5 @@ function _draw()
  --cls()
  circfill(x,y,a,rnd(16))
  circ(x,y,x,y)
+ spr(1,x,y)
 end
