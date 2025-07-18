@@ -1,5 +1,4 @@
 function _update()
-
 --move player
  if (btn(➡️)) p_x += p_spd
  if (btn(⬇️)) p_y += p_spd
@@ -10,20 +9,16 @@ function _update()
  if (btn(5)) a = a+1
 
 
-
-	--spawnitem()
-
 -- collision
  if (abs(p_x - i_x) < 8 and 
   abs(p_y - i_y)<8) then
 	  cls()
-	  i_x = rnd(120)
-	  i_y = rnd(120)
+	  i_x = rnd(120 - board)
+	  i_y = rnd(120 - board)
 	  i_draw = true
+	  sfx(1)
+	  board -= 7
+	  score += 1
 	   
  end
 end
-
-  
-
-  
