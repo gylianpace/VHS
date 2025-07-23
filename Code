@@ -1,9 +1,10 @@
-unction _init()
+function _init()
 	anfang()
 end
 
 function _update()
  steuerung()
+ kollision()
 end
 
 function _draw()
@@ -11,8 +12,6 @@ function _draw()
 end
 
 
-
--->8
 function anfang()
  --player
  px = 64
@@ -26,8 +25,11 @@ function anfang()
  iy = 10
  ic = 10
  ispr = 2
+ 
+ cancls = false
+ 
 end
--->8
+
 function steuerung()
 
 --move
@@ -40,8 +42,29 @@ function steuerung()
  if (btn(🅾️)) pc -= pspd
  
 end
--->8
+
+function kollision()
+
+ if ( abs(px - ix) < 8 and 
+ abs(py - iy) < 8  ) then
+  
+  
+  ix = rnd(120)
+  iy = rnd(120)
+  
+  cancls = 
+ end 
+
+end
+
+
 function bild()
+ 
+ if (cancls) then
+  cls()
+  map(0,0,0,0,128,128) 
+  cancls = false
+ end
  --cls()
  --  1. wort   2.x  3.y 4.farbe
  --circfill(x+4,y+4,4,rnd(f))
@@ -51,6 +74,8 @@ function bild()
  --circ(-x+128,-y+128,f,y)
  --print("★",x,y,rnd(f)+1)
  
+ 
  spr(pspr,px,py)
  spr(ispr,ix,iy)
- end
+ 
+end
