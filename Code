@@ -1,35 +1,56 @@
-function _init()
- x = 10
- y = 10
- a = 0
-
-value = 3
-
-sprites = {10,11,12,13,14,15}
-
-v = 1
+unction _init()
+	anfang()
 end
 
 function _update()
- if (btn(➡️)) x+= value
- if (btn(⬇️)) y+= value
- if (btn(⬅️)) x-= value
- if (btn(⬆️)) y-= value
- 
- if (btn(4)) a-= value
- if (btn(5)) a+= value
- 
- v += 1
- 
- if (v > 6) v = 1
- 
+ steuerung()
 end
 
 function _draw()
- --pset(x,y)
- --print("☉",x,y,x)
- --cls()
- circfill(x+3,y+3,7,rnd(2))
- --circ(x,y,x,y)
- spr(sprites[v],x,y)
+ bild()
 end
+
+
+
+-->8
+function anfang()
+ --player
+ px = 64
+	py = 64
+	pc = 10
+	pspd = 2
+	pspr = 1
+
+ --item
+ ix = 10
+ iy = 10
+ ic = 10
+ ispr = 2
+end
+-->8
+function steuerung()
+
+--move
+ if (btn(➡️)) px += pspd
+ if (btn(⬇️)) py += pspd
+ if (btn(⬅️)) px -= pspd
+ if (btn(⬆️)) py -= pspd
+ 
+ if (btn(❎)) pc += pspd
+ if (btn(🅾️)) pc -= pspd
+ 
+end
+-->8
+function bild()
+ --cls()
+ --  1. wort   2.x  3.y 4.farbe
+ --circfill(x+4,y+4,4,rnd(f))
+ --circ(y,x,-f+32,x)
+ --circ(y+8,x+8,-f+32,x)
+ --circ(y+16,x+16,-f+32,x)
+ --circ(-x+128,-y+128,f,y)
+ --print("★",x,y,rnd(f)+1)
+ 
+ spr(pspr,px,py)
+ spr(ispr,ix,iy)
+ end
