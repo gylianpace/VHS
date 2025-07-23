@@ -26,7 +26,19 @@ function anfang()
  ic = 10
  ispr = 2
  
+ -- game 
+ sp0c = 0
+ ibd = 0
+ 
+ -- game ziel
+ scr = 0
+ maxscr = 42
+ tmr = 2000
+ 
+ 
  cancls = false
+ 
+ map(0,0,0,0,128,128)
  
 end
 
@@ -49,10 +61,10 @@ function kollision()
  abs(py - iy) < 8  ) then
   
   
-  ix = rnd(120)
-  iy = rnd(120)
+  ix = rnd(0+ibd)
+  iy = rnd(0+ibd)
   
-  cancls = 
+  cancls = true
  end 
 
 end
