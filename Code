@@ -104,16 +104,27 @@ function bild()
  end
  --cls()
  --  1. wort   2.x  3.y 4.farbe
- --circfill(x+4,y+4,4,rnd(f))
  --circ(y,x,-f+32,x)
  --circ(y+8,x+8,-f+32,x)
  --circ(y+16,x+16,-f+32,x)
  --circ(-x+128,-y+128,f,y)
  --print("★",x,y,rnd(f)+1)
  
+ circfill(px+4,py+4,pc,rnd(16) )
+ circ(ix+4,iy+4,2+ic,rnd(16) )
+
  
  spr(pspr,px,py)
  spr(ispr,ix,iy)
+ 
+ 
+ -- ui
+ rectfill(39,1,59,7,0)
+ rectfill(69,1,82,7,0)
+ 
+ print(scr,40,2,10)
+ print("/42",48,2,10)
+ print( flr (tmr/10) ,70,2,10)
  
 end
 
