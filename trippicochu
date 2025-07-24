@@ -1,0 +1,269 @@
+function _init()
+ anfang()
+end
+
+function _update()
+ if gstt == "play" then
+  steuerung()
+  kollision()
+  game()
+ end 
+end
+
+function _draw()
+
+ if gstt == "titel" then
+  titel()
+ elseif gstt == "play" then
+  bild()
+ elseif gstt == "win" or 
+ gstt == "lose" then
+  ende()
+ end 
+end
+
+function anfang()
+-- player --------------------
+ px = 64  --player x koord.
+ py = 64	 --player y koord.
+ pspr = 3 --player sprite numm.
+ 
+ pspd = 2 --player geschwind.
+ pc = 4   --player vfx kreis
+
+-- item ----------------------
+ ix = 10  --item x position
+ iy = 10  --item y position
+ ispr = 1 --item sprite numm
+ ic = 0   --item vfx circle  
+ 
+-- sfx tabelle ----------------
+ sitm = 1 -- sound item number
+ swin = 2 -- sound win number
+ slos = 3 -- sound lose number
+ send1 = 4
+ send2 = 5
+ muspp = 0 -- music pattern number
+ muspt = 1
+ 
+-- game ---------------------- 
+ gstt = "titel"
+ ibd = 0  -- item difficulty
+ spdc = 0 -- speed count
+
+ scr = 42 -- player score
+ tmr = 5000 -- game timer
+ 
+ cancls = false 
+ map(0,0,0,0,128,128)
+ music(muspt)
+ 
+ 
+-- color tables --- 
+ ctn = 1
+ 
+ ct = {2,14,8,4,15,9,10,3,11,12,13,1}
+ cti = {10,3,11,12,13,1,2,14,8,4,15,9}
+ 
+ ctnui = 1
+ ctui = {0,1,2,3,4,5}
+ 
+ -- texts
+ t0 = "goal:"
+ t1 = "collect 42 picochus,"
+ t2 = "before the time runs out."
+ 
+ tlose = "): you lose :("
+ twin = "♥ you ♥ win ♥"
+
+ t9 = "press x+z to start"
+
+
+end
+
+function steuerung()
+
+	 --move player
+	 if (btn(➡️)) px += pspd --right
+	 if (btn(⬇️)) py += pspd --down
+	 if (btn(⬅️)) px -= pspd --left
+	 if (btn(⬆️)) py -= pspd --up 
+	 
+	 if (btn(🅾️)) then 
+	  if (pc < 128) pc += pspd/2 
+	 end 
+ 
+	 if (btn(❎)) then
+	  if (pc > 2) pc -= pspd/2
+	  --if (ican) pc = rnd(20-30)
+	 end 
+		
+end
+
+function kollision()
+----- collision ----------------
+ if abs(px - ix) < 8 and 
+ abs(py - iy) < 8  and
+ abs(pc-ic) < 1  then
+ 
+		--cls() -- if collect, clear screen
+		 
+		print(scr,ix,iy,10)
+		if (ibd < 120) ibd += 4 -- 
+		ix = rnd(0 + ibd) --rnd ix coord 
+		iy = rnd(0 + ibd) --rnd iy coord
+		
+		sfx(sitm) -- play sound
+		cancls = true	  
+		
+		scr -= 1
+		spdc += 1
+		
+		-- increase speed
+		if spdc == 10 then
+		 pspd += 0.5
+		 spdc = 0
+		end
+	end		
+end
+
+		 --[[
+		 
+		else if (btn(❎)) and 
+		(btn(🅾️)) then 
+		  init()
+  end
+	end -- not won  
+		
+	else if (btn(❎)) and 
+		 (btn(🅾️)) then init()
+ end
+  
+ end -- not lost
+end
+]]--
+
+function bild()
+
+ if (cancls) then
+  cls()
+  map (0,0,0,0,128,128)
+  cancls = false
+ end
+ 
+ 
+ ctn+=1
+ if (ctn > count(ct)) ctn=1
+
+ circfill(px+4,py+4,pc,
+ ct[ctn])
+ 
+ if (scr> 0) then 
+  -- item eyes
+  ctnui += 1
+  if (ctnui > count(ctui)) ctnui=1
+  rectfill(ix+3,iy+2,ix+7,iy+4
+   ,cti[ctn])
+
+  -- item
+  circ(ix+4,iy+4,ic,cti[ctn])
+   
+  spr(ispr, ix, iy)
+
+ end
+ 
+ spr(pspr,px,py)
+
+ -- ui
+ rectfill(39,1,59,7,ctui[ctnui])
+ rectfill(69,1,82,7,ctui[ctnui])
+ 
+ print(scr,40,2,10)
+ print("/42",48,2,10)
+ print( flr (tmr/10) ,70,2,10)
+
+ if (tmr <= 0) or (scr <=0) then 
+  print ("press z+x to restart", 
+	   20,60,ctui[ctnui])
+ end
+end
+
+function game()
+
+ 	if (tmr > 0) tmr -= 2 -- +timer
+	 ic = (px+py)/2 
+	 
+	 if (tmr == 280) sfx(send1,3)
+		if (tmr == 80) sfx(send2,3)
+		
+	 -- game maschine -------------	 		 
+		if (scr == 0) then -- win	 
+		 sfx(send1,-2)
+			sfx(send2,-2)
+		 sfx(swin)
+		 music(-1)
+		 gstt = "win"
+		end
+		 
+		 
+		if (tmr == 0) then -- lose
+		 sfx(slos,3)
+		 music(-1)
+		 gstt = "lose"
+		end 
+		 
+end
+
+
+function titel()
+ rectfill(0,0,128,128,rnd(2))
+ rectfill(0,4,128,124,rnd(3))
+ rectfill(0,8,128,120,rnd(4))
+ rectfill(0,12,128,116,2)
+ 
+ 
+ 
+ print(t0,8,16,10)
+ 
+ print(t1,10,23,10)
+ print(t2,10,30,10)
+
+ 
+ print(t9,10,100, rnd(6))
+ 
+ if (btn(❎)) and (btn(🅾️)) then
+  gstt = "play"
+  map(0,0,0,0,128,128)
+  music(muspp)
+ end 
+end
+
+
+
+function ende()
+ rectfill(0,0,128,128,rnd(2))
+ rectfill(0,4,128,124,rnd(3))
+ rectfill(0,8,128,120,rnd(4))
+ rectfill(0,12,128,116,2)
+ 
+ if gstt == "win" then
+   print(twin, 10,80,10)
+ end
+ 
+ if gstt == "lose" then
+   print(tlose, 10,80,10)
+ end
+
+
+ print(t9,10,100,rnd(4))
+ --print(t9,10,100,ctui[ctnui])
+ 
+ if (btn(❎)) and (btn(🅾️)) then
+  anfang()
+  map(0,0,0,0,128,128)
+  gstt = "play"
+  
+ end 
+ 
+end
+
