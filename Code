@@ -27,18 +27,30 @@ function anfang()
  ispr = 2
  
  -- game 
- sp0c = 0
- ibd = 0
+ spdc = 0
+ ibd  = 0
  
  -- game ziel
- scr = 0
- maxscr = 42
- tmr = 2000
+ scr = 42
+ tmr = 4200
  
  
  cancls = false
  
+ --audio
+ sclc  = 0 
+ swin  = 1
+ slos  = 2
+ stmr1 = 3
+ stmr2 = 2
+ 
+ mptit = 1
+ mpplay= 0
+ 
+ 
  map(0,0,0,0,128,128)
+ 
+
  
 end
 
@@ -50,23 +62,36 @@ function steuerung()
  if (btn(⬅️)) px -= pspd
  if (btn(⬆️)) py -= pspd
  
- if (btn(❎)) pc += pspd
- if (btn(🅾️)) pc -= pspd
+ if (btn(❎)) then
+  if (pc<128) pc += pspd/2
+ end
+ if (btn(🅾️)) then
+  if (pc> 2) pc -= pspd/2
+ end 
  
 end
 
 function kollision()
 
- if ( abs(px - ix) < 8 and 
- abs(py - iy) < 8  ) then
+ if (abs(px - ix) < 8 and 
+ abs(py - iy) < 8   and
+ abs (pc-ic) < 3) then
   
-  
+  if (ibd < 120) ibd += 4
   ix = rnd(0+ibd)
   iy = rnd(0+ibd)
-  
   cancls = true
+  
+  scr -= 1
+  spdc +=1
+  
+  if (spdc == 7) then
+   pspd += 0.5
+   spdc = 0
+  end    
+  
+  sfx(sclc)
  end 
-
 end
 
 
@@ -90,4 +115,10 @@ function bild()
  spr(pspr,px,py)
  spr(ispr,ix,iy)
  
+end
+
+function game()
+ 
+ if (tmr > 0) tmr -=2
+
 end
